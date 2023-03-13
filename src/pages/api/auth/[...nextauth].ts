@@ -4,7 +4,9 @@ import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import clientPromise from '@/lib/mongodb';
 
 export default NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
+  adapter: MongoDBAdapter(clientPromise, {
+    databaseName: 'auth',
+  }),
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -17,10 +19,10 @@ export default NextAuth({
           email: profile.email,
           image: profile.avatar_url,
           followers: profile.followers,
-          verified: true
+          verified: true,
         };
-      }
-    })
+      },
+    }),
   ],
   callbacks: {
     async session({ session, user }) {
@@ -28,6 +30,6 @@ export default NextAuth({
       // @ts-expect-error: no username
       session.username = user.username;
       return session;
-    }
-  }
+    },
+  },
 });
